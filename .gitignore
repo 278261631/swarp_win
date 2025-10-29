@@ -51,3 +51,6 @@
 *.dyn
 *.spi
 *.spl
+/build
+/.idea
+/dist

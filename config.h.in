@@ -1,0 +1,152 @@
+/* config.h.in - Configuration header for SWarp on Windows */
+
+#ifndef _CONFIG_H_
+#define _CONFIG_H_
+
+/* Package information */
+#define PACKAGE_NAME "SWarp"
+#define PACKAGE_VERSION "2.42.0"
+#define PACKAGE_STRING "SWarp 2.42.0"
+#define PACKAGE_TARNAME "swarp"
+#define PACKAGE_BUGREPORT "astromatic@astromatic.net"
+#define PACKAGE_URL "https://astromatic.net/software/swarp"
+
+/* Build date */
+#define DATE "@DATE@"
+
+/* Define to 1 if you have the <malloc.h> header file. */
+#cmakedefine HAVE_MALLOC_H 1
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#cmakedefine HAVE_UNISTD_H 1
+
+/* Define to 1 if you have the <sys/mman.h> header file. */
+#cmakedefine HAVE_SYS_MMAN_H 1
+
+/* Define to 1 if you have the `mmap' function. */
+#cmakedefine HAVE_MMAP 1
+
+/* Define to 1 if you have the `getenv' function. */
+#cmakedefine HAVE_GETENV 1
+
+/* Define to 1 if you have the `gethostname' function. */
+#cmakedefine HAVE_GETHOSTNAME 1
+
+/* Define to 1 if you have the `memcpy' function. */
+#cmakedefine HAVE_MEMCPY 1
+
+/* Define to 1 if you have the `memmove' function. */
+#cmakedefine HAVE_MEMMOVE 1
+
+/* Define to 1 if you have the `memset' function. */
+#cmakedefine HAVE_MEMSET 1
+
+/* Define to 1 if you have the `strstr' function. */
+#cmakedefine HAVE_STRSTR 1
+
+/* Define to 1 if you have the `atexit' function. */
+#cmakedefine HAVE_ATEXIT 1
+
+/* Define to 1 if you have the `getrlimit' function. */
+#cmakedefine HAVE_GETRLIMIT 1
+
+/* Define to 1 if you have the `isnan' function. */
+#cmakedefine HAVE_ISNAN 1
+
+/* Define to 1 if you have the `cosd' function. */
+#cmakedefine HAVE_COSD 1
+
+/* Define to 1 if you have the `sind' function. */
+#cmakedefine HAVE_SIND 1
+
+/* Define to 1 if you have the `tand' function. */
+#cmakedefine HAVE_TAND 1
+
+/* Define to 1 if you have the `acosd' function. */
+#cmakedefine HAVE_ACOSD 1
+
+/* Define to 1 if you have the `asind' function. */
+#cmakedefine HAVE_ASIND 1
+
+/* Define to 1 if you have the `atand' function. */
+#cmakedefine HAVE_ATAND 1
+
+/* Define to 1 if you have the `atan2d' function. */
+#cmakedefine HAVE_ATAN2D 1
+
+/* Define to 1 if you have the `sincos' function. */
+#cmakedefine HAVE_SINCOS 1
+
+/* Define to 1 if the type `long long int' is supported. */
+#cmakedefine HAVE_LONG_LONG_INT 1
+
+/* Define to 1 if the type `unsigned long long int' is supported. */
+#cmakedefine HAVE_UNSIGNED_LONG_LONG_INT 1
+
+/* Define to 1 if you have CFITSIO library */
+#cmakedefine HAVE_CFITSIO 1
+
+/* CFITSIO header filename */
+#ifdef HAVE_CFITSIO
+#define CFITSIO_H "fitsio.h"
+#endif
+
+/* Define to 1 if threading is enabled */
+#cmakedefine USE_THREADS 1
+
+/* Maximum number of POSIX threads */
+#cmakedefine THREADS_NMAX @THREADS_NMAX@
+
+/* Define to 1 if you have large file support */
+#define _FILE_OFFSET_BITS 64
+#define _LARGEFILE_SOURCE 1
+#define _LARGEFILE64_SOURCE 1
+
+/* Windows-specific definitions */
+#ifdef _WIN32
+  #ifndef _CRT_SECURE_NO_WARNINGS
+    #define _CRT_SECURE_NO_WARNINGS
+  #endif
+  
+  #ifndef _CRT_NONSTDC_NO_DEPRECATE
+    #define _CRT_NONSTDC_NO_DEPRECATE
+  #endif
+  
+  /* Windows doesn't have unistd.h */
+  #ifdef HAVE_UNISTD_H
+    #undef HAVE_UNISTD_H
+  #endif
+  
+  /* Windows doesn't have sys/mman.h */
+  #ifdef HAVE_SYS_MMAN_H
+    #undef HAVE_SYS_MMAN_H
+  #endif
+  
+  /* Windows doesn't have mmap */
+  #ifdef HAVE_MMAP
+    #undef HAVE_MMAP
+  #endif
+  
+  /* Windows doesn't have getrlimit */
+  #ifdef HAVE_GETRLIMIT
+    #undef HAVE_GETRLIMIT
+  #endif
+  
+  /* Define some POSIX functions that exist on Windows with different names */
+  #include <io.h>
+  #include <direct.h>
+  
+  #ifndef S_ISREG
+    #define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
+  #endif
+  
+  #ifndef S_ISDIR
+    #define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
+  #endif
+#endif
+
+/* Default XSLT URL */
+#define XSL_URL "file://share/swarp/swarp.xsl"
+
+#endif /* _CONFIG_H_ */
+

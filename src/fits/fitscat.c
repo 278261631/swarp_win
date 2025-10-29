@@ -165,14 +165,16 @@ int	close_cat(catstruct *cat)
    int status = RETURN_OK;
   
   if (cat->file && fclose(cat->file))
-    status = RETURN_ERROR;   
+    status = RETURN_ERROR;
 
   cat->file = NULL;
 
+#ifdef HAVE_CFITSIO
   if (cat->cfitsio_infptr && close_cfitsio(cat))
     status = RETURN_ERROR;
 
   cat->cfitsio_infptr = NULL;
+#endif
 
   return status;
   }

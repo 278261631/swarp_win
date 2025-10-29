@@ -38,7 +38,30 @@
 #include	<stdio.h>
 #include	<stdlib.h>
 #include	<string.h>
+
+/* Windows compatibility - must come before other includes */
+#if defined(_WIN32) || defined(__MINGW32__) || defined(__MINGW64__) || defined(__CYGWIN__)
+#include <io.h>
+#include <process.h>
+/* Use remove() instead of unlink() on Windows */
+#define unlink(x) remove(x)
+#ifndef getpid
+#define getpid _getpid
+#endif
+/* Disable mmap on Windows */
+#ifdef HAVE_MMAP
+#undef HAVE_MMAP
+#endif
+#ifdef HAVE_SYS_MMAN_H
+#undef HAVE_SYS_MMAN_H
+#endif
+#else
+/* Unix systems */
+#ifdef HAVE_UNISTD_H
 #include	<unistd.h>
+#endif
+#endif
+
 #include	<sys/types.h>
 
 #ifdef	HAVE_SYS_MMAN_H
@@ -126,6 +149,7 @@ PIXTYPE	*alloc_body(tabstruct *tab, void (*func)(PIXTYPE *ptr, int npix))
       tab->bodybuf = NULL;
     }
 
+#ifdef HAVE_MMAP
   if (size < body_vramleft)
     {
 /*-- Convert and copy the data to a swap file, and mmap() it */
@@ -168,6 +192,7 @@ PIXTYPE	*alloc_body(tabstruct *tab, void (*func)(PIXTYPE *ptr, int npix))
       return NULL;
     return (PIXTYPE *)tab->bodybuf;
     }
+#endif /* HAVE_MMAP */
 
 /* If no memory left at all: forget it! */
   return NULL;
@@ -232,6 +257,7 @@ FLAGTYPE	*alloc_ibody(tabstruct *tab,
       tab->bodybuf = NULL;
     }
 
+#ifdef HAVE_MMAP
   if (size < body_vramleft)
     {
 /*-- Convert and copy the data to a swap file, and mmap() it */
@@ -274,6 +300,7 @@ FLAGTYPE	*alloc_ibody(tabstruct *tab,
       return NULL;
     return (FLAGTYPE *)tab->bodybuf;
     }
+#endif /* HAVE_MMAP */
 
 /* If no memory left at all: forget it! */
   return NULL;
@@ -300,8 +327,10 @@ void	free_body(tabstruct *tab)
     size = (tab->tabsize/tab->bytepix)*sizeof(PIXTYPE);
     if (tab->swapflag)
       {
+#ifdef HAVE_MMAP
       if (munmap(tab->bodybuf, size))
         warning("Can't unmap ", tab->cat->filename);
+#endif
       tab->swapflag = 0;
       tab->bodybuf = NULL;
       body_vramleft += size;
