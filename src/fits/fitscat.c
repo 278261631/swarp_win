@@ -46,7 +46,7 @@
 #include	"fitscat_defs.h"
 #include	"fitscat.h"
 
-extern	float *fits_rand_value;
+float	*fits_rand_value = NULL;	/* defined locally: not exported by CFITSIO */
 
 char		fits_str[MAXCHAR];
 

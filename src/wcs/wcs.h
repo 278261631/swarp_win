@@ -64,6 +64,14 @@
 #include "cel.h"
 #include "lin.h"
 
+/* Windows/MinGW: <string.h>/<wchar.h> declare wide-char wcsset()/wcsrev(),
+ * which clash with WCSTools' own wcsset()/wcsrev(). Pull in the C library
+ * headers first, then remap our symbols so the prototypes do not conflict. */
+#include <string.h>
+#include <wchar.h>
+#define wcsset wcs_c_set
+#define wcsrev wcs_c_rev
+
 #ifdef __cplusplus
 extern "C" {
 #endif

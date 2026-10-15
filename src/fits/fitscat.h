@@ -39,7 +39,11 @@
 #endif
 
 #ifdef HAVE_CFITSIO
+#ifdef CFITSIO_H
 #include CFITSIO_H
+#else
+#include <fitsio.h>
+#endif
 #endif
 
 #define	MAXCHARS	256	/* max. number of characters */
@@ -102,10 +106,10 @@ typedef	unsigned int	FLAGTYPE;		/* Flag type */
 
 #ifdef	HAVE_UNSIGNED_LONG_LONG_INT
 typedef	unsigned long long		KINGSIZE_T;	/* for large sizes */
-typedef unsigned long long		ULONGLONG;
+typedef unsigned long long		SWARP_ULL;
 #else
 typedef	size_t				KINGSIZE_T;/* better than nothing */
-typedef union {unsigned int l[2];}	ULONGLONG;
+typedef union {unsigned int l[2];}	SWARP_ULL;
 #endif
 #ifdef HAVE_LONG_LONG_INT
 typedef long long			SLONGLONG;

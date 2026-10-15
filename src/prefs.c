@@ -495,7 +495,13 @@ void	useprefs(void)
 /*-- Get the number of processors for parallel builds */
 /*-- See, e.g. http://ndevilla.free.fr/threads */
     nproc = -1;
-#if defined(_SC_NPROCESSORS_ONLN)		/* AIX, Solaris, Linux */
+#if defined(_WIN32)				/* Windows: no sysconf() */
+    {
+     char	*npc = getenv("NUMBER_OF_PROCESSORS");
+     if (npc)
+       nproc = atoi(npc);
+    }
+#elif defined(_SC_NPROCESSORS_ONLN)		/* AIX, Solaris, Linux */
     nproc = (int)sysconf(_SC_NPROCESSORS_ONLN);
 #elif defined(_SC_NPROCESSORS_CONF)
     nproc = (int)sysconf(_SC_NPROCESSORS_CONF);

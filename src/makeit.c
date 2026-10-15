@@ -174,7 +174,7 @@ void	makeit(void)
         continue;
 #else
       if ((jima>=0 && j!=jima) || (jima < 0 && (!tab->naxis ||
-	(tab->naxis >= 2
+	!(tab->naxis >= 2
 	&& strncmp(tab->xtension, "BINTABLE", 8)
 	&& strncmp(tab->xtension, "ASCTABLE", 8))))) {
         if (tab->isTileCompressed)

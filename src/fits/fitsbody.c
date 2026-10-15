@@ -71,7 +71,11 @@
 #include	"fitscat.h"
 
 #ifdef	HAVE_CFITSIO
+#ifdef CFITSIO_H
 #include    CFITSIO_H
+#else
+#include    <fitsio.h>
+#endif
 #endif
 
 size_t	body_maxram = BODY_DEFRAM,
@@ -451,7 +455,7 @@ void	read_body(tabstruct *tab, PIXTYPE *ptr, size_t size)
   unsigned short	suval, sublank, ashort=1;
   short			val16, sval, sblank;
 #ifdef HAVE_LONG_LONG_INT
-  ULONGLONG		lluval, llublank;
+  SWARP_ULL		lluval, llublank;
   SLONGLONG		llval, llblank;
 #endif
   unsigned int		iuval, iublank;
@@ -623,10 +627,10 @@ void	read_body(tabstruct *tab, PIXTYPE *ptr, size_t size)
                 }
               else
                 {
-                llublank = (ULONGLONG)tab->blank;
+                llublank = (SWARP_ULL)tab->blank;
 #pragma ivdep
-                for (i=spoonful; i--; bufdata += sizeof(ULONGLONG))
-                  *(ptr++) = ((lluval = *((ULONGLONG *)bufdata)) == llublank)?
+                for (i=spoonful; i--; bufdata += sizeof(SWARP_ULL))
+                  *(ptr++) = ((lluval = *((SWARP_ULL *)bufdata)) == llublank)?
 			-BIG : lluval*bs + bz;
                 }
 	      }
@@ -638,8 +642,8 @@ void	read_body(tabstruct *tab, PIXTYPE *ptr, size_t size)
                   *(ptr++) = *((SLONGLONG *)bufdata)*bs + bz;
               else
 #pragma ivdep
-                for (i=spoonful; i--; bufdata += sizeof(ULONGLONG))
-                  *(ptr++) = *((ULONGLONG *)bufdata)*bs + bz;
+                for (i=spoonful; i--; bufdata += sizeof(SWARP_ULL))
+                  *(ptr++) = *((SWARP_ULL *)bufdata)*bs + bz;
 	      }
             break;
 #endif
@@ -874,8 +878,8 @@ void	read_ibody(tabstruct *tab, FLAGTYPE *ptr, size_t size)
 #endif
               swapbytes(bufdata, 8, spoonful);
 #pragma ivdep
-            for (i=spoonful; i--; bufdata += sizeof(ULONGLONG))
-              *(ptr++) = (FLAGTYPE)*((ULONGLONG *)bufdata);
+            for (i=spoonful; i--; bufdata += sizeof(SWARP_ULL))
+              *(ptr++) = (FLAGTYPE)*((SWARP_ULL *)bufdata);
             break;
 #endif
           case BP_FLOAT:
@@ -1100,10 +1104,10 @@ void	write_body(tabstruct *tab, PIXTYPE *ptr, size_t size)
               }
             else
               {
-               ULONGLONG	*bufdata = (ULONGLONG *)cbufdata0;
+               SWARP_ULL	*bufdata = (SWARP_ULL *)cbufdata0;
 #pragma ivdep
               for (i=spoonful; i--;)
-                *(bufdata++) = (ULONGLONG)((*(ptr++)-bz)/bs+0.49999);
+                *(bufdata++) = (SWARP_ULL)((*(ptr++)-bz)/bs+0.49999);
               }
             if (bswapflag)
               swapbytes(cbufdata0, 8, spoonful);
@@ -1324,10 +1328,10 @@ void	write_ibody(tabstruct *tab, FLAGTYPE *ptr, size_t size)
               }
             else
               {
-               ULONGLONG	*bufdata = (ULONGLONG *)cbufdata0;
+               SWARP_ULL	*bufdata = (SWARP_ULL *)cbufdata0;
 #pragma ivdep
               for (i=spoonful; i--;)
-                *(bufdata++) = (ULONGLONG)*(ptr++);
+                *(bufdata++) = (SWARP_ULL)*(ptr++);
               }
             if (bswapflag)
               swapbytes(cbufdata0, 8, spoonful);

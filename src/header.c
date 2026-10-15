@@ -30,7 +30,9 @@
 #include	"config.h"
 #endif
 
+#ifndef _WIN32
 #include <pwd.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -238,11 +240,24 @@ void	writefitsinfo_outfield(fieldstruct *field, fieldstruct *infield)
     fitswrite(tab->headbuf, "AUTHOR", "unknown", H_STRING, T_STRING);
 
 /* Host name */
+#ifdef _WIN32
+/* Windows has no gethostname() without winsock; use COMPUTERNAME instead to
+   avoid pulling in <windows.h> (which redefines ULONGLONG/MAXCHAR). */
+  {
+  char *hostp = getenv("COMPUTERNAME");
+  if (hostp && *hostp)
+    {
+    addkeywordto_head(tab, "ORIGIN", "Where it was done");
+    fitswrite(tab->headbuf, "ORIGIN", hostp, H_STRING, T_STRING);
+    }
+  }
+#else
   if (!gethostname(gstr, 80))
     {
     addkeywordto_head(tab, "ORIGIN", "Where it was done");
     fitswrite(tab->headbuf, "ORIGIN", gstr, H_STRING, T_STRING);
     }
+#endif
 
 /* Obs dates */
   thetime = time(NULL);
@@ -417,11 +432,24 @@ void	writefitsinfo_field(fieldstruct *field, fieldstruct *infield)
     fitswrite(tab->headbuf, "AUTHOR", "unknown", H_STRING, T_STRING);
 
 /* Host name */
+#ifdef _WIN32
+/* Windows has no gethostname() without winsock; use COMPUTERNAME instead to
+   avoid pulling in <windows.h> (which redefines ULONGLONG/MAXCHAR). */
+  {
+  char *hostp = getenv("COMPUTERNAME");
+  if (hostp && *hostp)
+    {
+    addkeywordto_head(tab, "ORIGIN", "Where it was done");
+    fitswrite(tab->headbuf, "ORIGIN", hostp, H_STRING, T_STRING);
+    }
+  }
+#else
   if (!gethostname(gstr, 80))
     {
     addkeywordto_head(tab, "ORIGIN", "Where it was done");
     fitswrite(tab->headbuf, "ORIGIN", gstr, H_STRING, T_STRING);
     }
+#endif
 
 /* Obs dates */
   thetime = time(NULL);
